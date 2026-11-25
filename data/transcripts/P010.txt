@@ -1,0 +1,25 @@
+# SYNTHETIC INTERVIEW P010
+INTERVIEWER: Can you tell me about moving between homes or placements while you were in care?
+PARTICIPANT: I would rather not go into it.
+INTERVIEWER: How did being in care affect your education?
+PARTICIPANT: I wanted to go to college but nobody helped me with the applications. Nobody talked to me about university or apprenticeships.
+INTERVIEWER: What was your relationship with your social worker like?
+PARTICIPANT: My social worker seemed overloaded with cases and was always in a rush. That said, i had the same social worker for several years and I could trust them.
+INTERVIEWER: How did that affect you?
+PARTICIPANT: It felt like I was just a case number.
+INTERVIEWER: Did you get the emotional or mental health support you needed?
+PARTICIPANT: I felt anxious and low all the time but the service had a long waiting list. A crisis happened before anyone took it seriously.
+INTERVIEWER: What was that like for you?
+PARTICIPANT: A crisis happened before anyone took it seriously.
+INTERVIEWER: Tell me about leaving care. What was that like?
+PARTICIPANT: My personal adviser helped me find a flat and set up my bills before I left.
+INTERVIEWER: Can you say more about that?
+PARTICIPANT: I felt prepared and a bit less scared.
+INTERVIEWER: How much were you involved in decisions about your life?
+PARTICIPANT: Nobody asked me what I thought about my care plan, they just told me the outcome.
+INTERVIEWER: Was there anyone who made a real difference to you?
+PARTICIPANT: A youth worker stayed in my life for years and made the biggest difference.
+INTERVIEWER: What about contact with your family or siblings?
+PARTICIPANT: I was only allowed to see my brother for an hour a month in an office. That said, we were placed together as siblings, which was a huge relief.
+INTERVIEWER: If you could change one thing about the care system, what would it be?
+PARTICIPANT: Exams should never be missed because of a move.

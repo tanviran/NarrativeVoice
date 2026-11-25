@@ -1,0 +1,12 @@
+participant_id,line_no,question_id,question,is_followup,text,n_words,tone,tone_score,x,y
+P100,3,Q1,Can you tell me about moving between homes or placements while you were in care?,False,"I was placed miles from my friends and my town, so I lost everyone I knew.",16,negative,0.999,95.42549,-97.92224
+P100,5,Q2,How did being in care affect your education?,False,The virtual school team arranged a tutor for me and my grades improved.,13,positive,0.997,202.08263,-207.30629
+P100,7,Q3,What was your relationship with your social worker like?,False,I hardly ever saw my social worker because they cancelled most visits.,12,negative,0.988,-80.878174,-42.898365
+P100,9,Q3,What was your relationship with your social worker like?,True,After a while I stopped opening up to anyone.,9,negative,1.0,-32.677917,71.20809
+P100,11,Q4,Tell me about leaving care. What was that like?,False,I had a proper plan for leaving care and I knew what to expect. I felt prepared and a bit less scared.,22,positive,0.819,260.5232,145.04713
+P100,13,Q4,Tell me about leaving care. What was that like?,True,I felt prepared and a bit less scared.,8,uncertain,0.514,204.1324,175.29721
+P100,15,Q5,How much were you involved in decisions about your life?,False,"When I spoke up in reviews, it felt like the adults had already made up their minds.",17,negative,0.998,85.12098,182.8681
+P100,17,Q6,Was there anyone who made a real difference to you?,False,"People were paid to be there and I could tell it was just a job. That said, a mentor from a charity checked in on me every week.",28,negative,0.997,35.326942,-137.40106
+P100,19,Q7,What about contact with your family or siblings?,False,Nobody helped me rebuild my relationship with my mum.,9,negative,1.0,-101.444786,122.31327
+P100,21,Q7,What about contact with your family or siblings?,True,It felt like a punishment for something that was not my fault.,12,uncertain,0.635,88.70594,-212.02446
+P100,23,Q8,"If you could change one thing about the care system, what would it be?",False,Social workers need smaller caseloads so they have time for us.,11,negative,0.998,-144.16405,-75.675804

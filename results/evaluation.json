@@ -1,0 +1,165 @@
+{
+  "generated": "2026-11-25",
+  "n_answers": 992,
+  "planted_topics": 8,
+  "embedders": [
+    {
+      "embedder": "minilm",
+      "dimensions": 384,
+      "embed_seconds": 4.4,
+      "model": "all-MiniLM-L6-v2"
+    },
+    {
+      "embedder": "mpnet",
+      "dimensions": 768,
+      "embed_seconds": 2.0,
+      "model": "all-mpnet-base-v2"
+    },
+    {
+      "embedder": "tfidf",
+      "dimensions": 100,
+      "embed_seconds": 0.0,
+      "model": "TF-IDF + SVD (no neural network)"
+    }
+  ],
+  "clustering": [
+    {
+      "embedder": "minilm",
+      "method": "k-means (auto k)",
+      "k_found": 15,
+      "ARI": 0.372,
+      "NMI": 0.561,
+      "assigned_pct": 100.0,
+      "stability": 0.423,
+      "seconds": 1.43
+    },
+    {
+      "embedder": "minilm",
+      "method": "k-means (k=8)",
+      "k_found": 8,
+      "ARI": 0.347,
+      "NMI": 0.508,
+      "assigned_pct": 100.0,
+      "stability": 0.432,
+      "seconds": 0.19
+    },
+    {
+      "embedder": "minilm",
+      "method": "agglomerative (k=8)",
+      "k_found": 8,
+      "ARI": 0.292,
+      "NMI": 0.467,
+      "assigned_pct": 100.0,
+      "stability": null,
+      "seconds": 0.19
+    },
+    {
+      "embedder": "minilm",
+      "method": "HDBSCAN",
+      "k_found": 15,
+      "ARI": 0.653,
+      "NMI": 0.794,
+      "assigned_pct": 44.8,
+      "stability": null,
+      "seconds": 0.46
+    },
+    {
+      "embedder": "mpnet",
+      "method": "k-means (auto k)",
+      "k_found": 16,
+      "ARI": 0.28,
+      "NMI": 0.487,
+      "assigned_pct": 100.0,
+      "stability": 0.406,
+      "seconds": 2.94
+    },
+    {
+      "embedder": "mpnet",
+      "method": "k-means (k=8)",
+      "k_found": 8,
+      "ARI": 0.235,
+      "NMI": 0.354,
+      "assigned_pct": 100.0,
+      "stability": 0.297,
+      "seconds": 0.38
+    },
+    {
+      "embedder": "mpnet",
+      "method": "agglomerative (k=8)",
+      "k_found": 8,
+      "ARI": 0.225,
+      "NMI": 0.366,
+      "assigned_pct": 100.0,
+      "stability": null,
+      "seconds": 0.1
+    },
+    {
+      "embedder": "mpnet",
+      "method": "HDBSCAN",
+      "k_found": 10,
+      "ARI": 0.698,
+      "NMI": 0.782,
+      "assigned_pct": 31.4,
+      "stability": null,
+      "seconds": 1.02
+    },
+    {
+      "embedder": "tfidf",
+      "method": "k-means (auto k)",
+      "k_found": 16,
+      "ARI": 0.217,
+      "NMI": 0.437,
+      "assigned_pct": 100.0,
+      "stability": 0.12,
+      "seconds": 0.35
+    },
+    {
+      "embedder": "tfidf",
+      "method": "k-means (k=8)",
+      "k_found": 8,
+      "ARI": 0.171,
+      "NMI": 0.299,
+      "assigned_pct": 100.0,
+      "stability": 0.182,
+      "seconds": 0.05
+    },
+    {
+      "embedder": "tfidf",
+      "method": "agglomerative (k=8)",
+      "k_found": 8,
+      "ARI": 0.106,
+      "NMI": 0.405,
+      "assigned_pct": 100.0,
+      "stability": null,
+      "seconds": 0.02
+    },
+    {
+      "embedder": "tfidf",
+      "method": "HDBSCAN",
+      "k_found": 9,
+      "ARI": 0.854,
+      "NMI": 0.903,
+      "assigned_pct": 40.2,
+      "stability": null,
+      "seconds": 0.1
+    }
+  ],
+  "tone": [
+    {
+      "method": "distilbert-sst2",
+      "agrees_pct": 79.9,
+      "uncertain_pct": 6.4,
+      "seconds": 1.54
+    },
+    {
+      "method": "lexicon",
+      "agrees_pct": 64.0,
+      "uncertain_pct": 31.2,
+      "seconds": 0.0
+    }
+  ],
+  "verification": {
+    "verified": 992,
+    "total": 992
+  }
+}

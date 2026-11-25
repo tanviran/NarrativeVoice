@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.DS_Store
+.pytest_cache/
+.venv/
+.env
+results/cache/
+results/uploads/
+data/uploads/*
+!data/uploads/example_participant.txt

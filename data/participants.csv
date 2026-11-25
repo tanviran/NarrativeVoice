@@ -1,0 +1,101 @@
+participant_id,region,age_band,time_in_care,ethnic_group
+P001,North West,18-21,over 5 years,White
+P002,West Midlands,26-30,2-5 years,Black or Black British
+P003,Wales,26-30,2-5 years,White
+P004,Wales,22-25,over 5 years,White
+P005,South West,22-25,over 5 years,White
+P006,West Midlands,26-30,over 5 years,White
+P007,London,18-21,2-5 years,Asian or Asian British
+P008,Scotland,22-25,2-5 years,White
+P009,London,26-30,under 2 years,White
+P010,West Midlands,22-25,over 5 years,Asian or Asian British
+P011,North West,22-25,under 2 years,White
+P012,North West,26-30,under 2 years,White
+P013,London,18-21,under 2 years,White
+P014,London,18-21,over 5 years,Asian or Asian British
+P015,London,18-21,2-5 years,Mixed
+P016,London,22-25,2-5 years,Asian or Asian British
+P017,West Midlands,26-30,over 5 years,White
+P018,North West,18-21,2-5 years,White
+P019,North West,18-21,2-5 years,White
+P020,North West,26-30,2-5 years,Black or Black British
+P021,South West,26-30,over 5 years,Other
+P022,North West,22-25,over 5 years,White
+P023,Wales,22-25,2-5 years,White
+P024,Wales,22-25,under 2 years,White
+P025,London,26-30,over 5 years,White
+P026,West Midlands,18-21,under 2 years,White
+P027,West Midlands,18-21,over 5 years,White
+P028,Wales,18-21,over 5 years,White
+P029,South West,26-30,2-5 years,Black or Black British
+P030,North West,26-30,under 2 years,White
+P031,Scotland,18-21,2-5 years,White
+P032,London,22-25,over 5 years,White
+P033,West Midlands,22-25,2-5 years,White
+P034,Wales,26-30,2-5 years,Black or Black British
+P035,Scotland,18-21,over 5 years,White
+P036,North West,22-25,2-5 years,White
+P037,South West,22-25,over 5 years,Black or Black British
+P038,London,26-30,over 5 years,White
+P039,North West,18-21,2-5 years,Asian or Asian British
+P040,South West,26-30,2-5 years,White
+P041,London,18-21,2-5 years,Asian or Asian British
+P042,Scotland,18-21,over 5 years,Asian or Asian British
+P043,South West,18-21,over 5 years,White
+P044,West Midlands,26-30,2-5 years,White
+P045,Scotland,22-25,2-5 years,White
+P046,South West,22-25,2-5 years,White
+P047,London,18-21,over 5 years,Asian or Asian British
+P048,London,18-21,over 5 years,White
+P049,West Midlands,26-30,over 5 years,White
+P050,North West,22-25,over 5 years,White
+P051,London,22-25,under 2 years,White
+P052,North West,18-21,under 2 years,Asian or Asian British
+P053,North West,22-25,under 2 years,White
+P054,South West,18-21,2-5 years,White
+P055,Wales,18-21,2-5 years,White
+P056,London,26-30,2-5 years,White
+P057,London,26-30,under 2 years,White
+P058,London,26-30,over 5 years,Black or Black British
+P059,London,22-25,over 5 years,Black or Black British
+P060,London,26-30,under 2 years,Asian or Asian British
+P061,London,22-25,2-5 years,Mixed
+P062,London,22-25,over 5 years,White
+P063,London,26-30,2-5 years,White
+P064,London,26-30,2-5 years,Black or Black British
+P065,Wales,26-30,under 2 years,Other
+P066,London,26-30,under 2 years,White
+P067,West Midlands,18-21,over 5 years,Mixed
+P068,West Midlands,22-25,2-5 years,Mixed
+P069,North West,26-30,over 5 years,White
+P070,London,26-30,over 5 years,Black or Black British
+P071,Scotland,26-30,over 5 years,Other
+P072,West Midlands,18-21,2-5 years,Mixed
+P073,North West,18-21,under 2 years,White
+P074,North West,22-25,under 2 years,Black or Black British
+P075,Scotland,22-25,under 2 years,Other
+P076,Scotland,18-21,2-5 years,White
+P077,London,26-30,under 2 years,White
+P078,Scotland,22-25,over 5 years,Asian or Asian British
+P079,South West,22-25,over 5 years,White
+P080,North West,22-25,2-5 years,Asian or Asian British
+P081,Scotland,18-21,under 2 years,White
+P082,London,22-25,under 2 years,Asian or Asian British
+P083,West Midlands,26-30,2-5 years,White
+P084,Scotland,22-25,under 2 years,Other
+P085,Wales,22-25,2-5 years,White
+P086,South West,26-30,2-5 years,White
+P087,London,26-30,over 5 years,Mixed
+P088,London,26-30,2-5 years,White
+P089,Wales,18-21,over 5 years,Asian or Asian British
+P090,Wales,22-25,over 5 years,White
+P091,Wales,22-25,2-5 years,Black or Black British
+P092,London,18-21,2-5 years,White
+P093,Scotland,18-21,over 5 years,White
+P094,West Midlands,18-21,under 2 years,Asian or Asian British
+P095,North West,18-21,2-5 years,Asian or Asian British
+P096,West Midlands,22-25,under 2 years,Black or Black British
+P097,North West,22-25,over 5 years,Asian or Asian British
+P098,North West,18-21,under 2 years,White
+P099,South West,26-30,2-5 years,Asian or Asian British
+P100,Scotland,26-30,over 5 years,Asian or Asian British

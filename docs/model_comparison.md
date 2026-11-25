@@ -1,0 +1,39 @@
+# Model and method comparison
+
+Generated 2026-11-25 by `python src/evaluate.py` on 992 synthetic answers (planted topics: 8). Scores compare methods on easy, template-built data. They are not claims of real-world accuracy.
+
+## Embedding models
+
+| embedder | model | dimensions | embed_seconds |
+|---|---|---|---|
+| minilm | all-MiniLM-L6-v2 | 384 | 4.4 |
+| mpnet | all-mpnet-base-v2 | 768 | 2.0 |
+| tfidf | TF-IDF + SVD (no neural network) | 100 | 0.0 |
+
+## Clustering (recovery of planted topics)
+
+| embedder | method | k_found | ARI | NMI | assigned_pct | stability | seconds |
+|---|---|---|---|---|---|---|---|
+| minilm | k-means (auto k) | 15 | 0.372 | 0.561 | 100.0 | 0.423 | 1.43 |
+| minilm | k-means (k=8) | 8 | 0.347 | 0.508 | 100.0 | 0.432 | 0.19 |
+| minilm | agglomerative (k=8) | 8 | 0.292 | 0.467 | 100.0 |  | 0.19 |
+| minilm | HDBSCAN | 15 | 0.653 | 0.794 | 44.8 |  | 0.46 |
+| mpnet | k-means (auto k) | 16 | 0.28 | 0.487 | 100.0 | 0.406 | 2.94 |
+| mpnet | k-means (k=8) | 8 | 0.235 | 0.354 | 100.0 | 0.297 | 0.38 |
+| mpnet | agglomerative (k=8) | 8 | 0.225 | 0.366 | 100.0 |  | 0.1 |
+| mpnet | HDBSCAN | 10 | 0.698 | 0.782 | 31.4 |  | 1.02 |
+| tfidf | k-means (auto k) | 16 | 0.217 | 0.437 | 100.0 | 0.12 | 0.35 |
+| tfidf | k-means (k=8) | 8 | 0.171 | 0.299 | 100.0 | 0.182 | 0.05 |
+| tfidf | agglomerative (k=8) | 8 | 0.106 | 0.405 | 100.0 |  | 0.02 |
+| tfidf | HDBSCAN | 9 | 0.854 | 0.903 | 40.2 |  | 0.1 |
+
+## Tone
+
+| method | agrees_pct | uncertain_pct | seconds |
+|---|---|---|---|
+| distilbert-sst2 | 79.9 | 6.4 | 1.54 |
+| lexicon | 64.0 | 31.2 | 0.0 |
+
+## Quote verification
+
+992 of 992 answers were found verbatim at their stated line.
