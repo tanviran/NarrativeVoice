@@ -1,26 +1,25 @@
-# Design decisions: what we chose, what else we could have done, and why not
+# Design decisions: what I chose, what else I could have done, and why not
 
-## Why keep this document at all?
-
-1. **Defensibility.** Anyone reviewing the work (a supervisor, an ethics panel, a commissioner) can ask
-   "why did you do it this way?" A recorded reason is stronger than a memory.
-2. **Reproducibility.** Someone else can rerun the analysis and know which choices drove the results.
-3. **Honesty about trade-offs.** Every method has weaknesses. Writing them down stops them being hidden.
+## Why I kept this document
+1. **Defensibility.** If a supervisor, an ethics panel or a commissioner asks "why did you do it this way?", a recorded
+   reason is stronger than my memory.
+2. **Reproducibility.** Someone else can rerun the analysis and see which choices drove the results.
+3. **Honesty about trade-offs.** Every method has weaknesses. Writing them down stops me hiding them.
 4. **Handover.** The people who build a system are often not the people who maintain it.
 5. **Governance.** Work with vulnerable participants needs an audit trail of how their words were processed.
 
-Format of each record: the decision, options considered, what we chose, why, the cost of the choice,
-and what would make us change it.
+Each record gives the decision, the options I considered, what I chose, why, the cost of the choice, and what would
+make me change it.
 
 ---
 
 ## D1. Synthetic data, generated from templates
 - **Options:** (a) real interviews, (b) public datasets, (c) LLM-generated interviews, (d) template-generated interviews.
 - **Chosen:** (d). The brief requires synthetic or public non-sensitive data.
-- **Why:** it is safe, it lets us plant known patterns (which topics co-occur, a regional effect) so we can TEST
+- **Why:** it is safe, it lets me plant known patterns (which topics co-occur, a regional effect) so I can TEST
   whether the pipeline finds them, and it is fully reproducible (fixed random seed).
 - **Why not the others:** real data is out of scope and unsafe. Public datasets rarely have care-experienced
-  interviews with questions and metadata. LLM-generated interviews would be more natural, but we could not control or
+  interviews with questions and metadata. LLM-generated interviews would be more natural, but I could not control or
   verify what patterns they contain.
 - **Cost:** templates are repetitive, so results look cleaner than real interviews. Scores from evaluate.py show
   how methods compare, not how accurate the system would be on real data.
@@ -42,7 +41,7 @@ and what would make us change it.
 - **Chosen:** (c).
 - **Why:** an interview covers many topics, so one label per interview is meaningless. Sentences are often too short
   to carry meaning on their own. An answer is a natural, quotable unit and maps to a line number for verification.
-- **Cost:** a long answer covering two topics gets one theme. Our synthetic answers are mostly single-topic.
+- **Cost:** a long answer covering two topics gets one theme. My synthetic answers are mostly single-topic.
 - **Revisit when:** real answers are long and multi-topic: split into sentences or paragraphs.
 
 ## D4. Sentence embeddings (all-MiniLM-L6-v2) to represent meaning
@@ -51,8 +50,9 @@ and what would make us change it.
 - **Chosen:** (c), with (a) and (d) available for comparison (NV_EMBEDDER=tfidf or mpnet).
 - **Why:** embeddings match meaning ("moved homes" and "changed placements"), which keyword methods miss.
   MiniLM is small, fast on a laptop and runs locally, so no participant text leaves the machine.
-- **Why not (a)/(b):** short answers share few exact words, so counts are sparse. In our offline test the TF-IDF
-  baseline recovered the planted topics poorly (adjusted Rand index about 0.2) and gave unstable themes. Run
+- **Why not (a)/(b):** short answers share few exact words, so counts are sparse. In my comparison, k-means on the TF-IDF
+  baseline recovered the planted topics poorly (adjusted Rand index about 0.2) and gave unstable themes. TF-IDF with
+  HDBSCAN scored higher (0.85), but it left about 60% of answers without a theme. Run
   `python src/evaluate.py minilm mpnet tfidf` to see all three on your machine.
 - **Why not (e):** sends participant text to a third party, which is hard to justify for vulnerable participants.
 - **Cost:** small models are weaker than large ones, and they capture topic better than tone.
@@ -66,7 +66,7 @@ and what would make us change it.
   typical answer", and the user can change k live in the dashboard.
 - **Why not (c)/(d):** HDBSCAN leaves many points unassigned as noise and needs tuning, and BERTopic stacks several
   tools that are harder to explain in a panel. Both are good next steps.
-- **Why not (e):** an LLM reading everything cannot be checked and may invent themes. We use an LLM only after
+- **Why not (e):** an LLM reading everything cannot be checked and may invent themes. I use an LLM only after
   themes exist, on verified quotes.
 - **Why not (f):** the point is to help researchers cope with volume.
 - **Cost:** k-means assumes round, similar-sized groups and forces every answer into a theme. Silhouette can favour
@@ -178,13 +178,13 @@ and what would make us change it.
 - **Measures:** agreement with the planted topics (adjusted Rand index and normalised mutual information), share of
   answers given a theme, stability across random starts, and run time. Tone is measured as agreement with the
   planted positive or negative stance.
-- **Why these measures:** because the synthetic data has known topics, we can measure whether a method recovers them.
+- **Why these measures:** because the synthetic data has known topics, I can measure whether a method recovers them.
   Share assigned matters because a method can score well by leaving most answers unassigned.
 - **Caveat:** the data is template-built and therefore easier than real interviews. The numbers rank methods and
   do not estimate real accuracy. Reproduce them with `python src/evaluate.py`. Results are in
   `docs/model_comparison.md` and on the Methods page of the dashboard.
 
-## Known limitations (state these openly)
+## Known limitations
 - Synthetic, template-based data: results are cleaner than real interviews.
 - Tone is approximate, and the fallback word list is crude.
 - Subgroup comparisons (region, age and so on) are exploratory. Small groups produce noise.

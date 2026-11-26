@@ -35,7 +35,7 @@ def _pick(df, name):
 
 def render(ctx):
     st.title("Methods and choices")
-    st.caption("What we chose, what else we could have done, and why. Full reasoning is in docs/decisions.md.")
+    st.caption("What I chose, what else I could have done, and why. Full reasoning is in docs/decisions.md.")
     st.dataframe(pd.DataFrame(CHOICES, columns=["Decision", "Chosen", "Alternatives", "Why"]), hide_index=True,
                  width="stretch", column_config={"Why": st.column_config.TextColumn(width="large")})
 
