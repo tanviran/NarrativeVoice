@@ -90,8 +90,7 @@ They set the status (pending review, accepted, needs edit, rejected), rename the
 notes. Every action is written to `audit_log.jsonl` and decisions to `reviews.json`. The downloadable
 `reviewed_findings.md` contains only accepted themes, with the share of participants who raised each one, the
 tone of the answers and the researcher's notes. Quotes are re-checked against the transcripts when the report is
-built, and any that fail are marked NOT VERIFIED. In a real study I would add a second
-coder, an agreement score between researchers, and sign-off by the co-production group.
+built, and any that fail are marked NOT VERIFIED.
 
 ## 7. Technologies and why
 | Choice | Why |
