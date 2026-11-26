@@ -21,11 +21,29 @@ would extend it.
 | 6. Human validation | Researcher accepts, renames, edits or rejects each theme; notes, audit log, report export | Review page |
 
 ## 3. Architecture
-![Prototype architecture](architecture_prototype.png)
 
 Data flows in five stages: **input**, **processing** (run once, results saved to `results/`), **analysis** (live in
 the dashboard), **safeguards**, and **human validation**. The dashboard is a Streamlit app (`app.py`) with one module
-per page in `ui/`. A Mermaid version of both diagrams is in `architecture.md`.
+per page in `ui/`. The same diagram is given below as editable Mermaid source, showing which module does each job.
+
+```mermaid
+flowchart LR
+    G["generate_data.py: 100 synthetic interviews, metadata, planted ground truth"] --> L
+    U["Upload page: your own transcripts, format check"] --> L
+    L["loader.py: each answer paired with its interviewer question"] --> E["embed.py: sentence embeddings, cached"]
+    L --> T["tone.py: positive, negative, uncertain"]
+    E --> P["pipeline.py: 2D map, saved results"]
+    T --> P
+    P --> D["app.py: dashboard, one module per page"]
+    D --> TH["themes.py: k-means, adjustable live"]
+    D --> R["relations.py: lift and Fisher test"]
+    D --> V["evidence.py: verbatim quote check"]
+    D --> Q["quality.py and privacy.py: voices that do not fit, identifier scan"]
+    D --> LLM["insights.py: optional local LLM behind hard checks"]
+    D --> H["Review page: accept, rename, notes, audit log"]
+    EV["evaluate.py: compare methods against planted truth"] --> M["Methods page and docs/model_comparison.md"]
+    M -.-> D
+```
 
 ## 4. Pipeline, step by step
 1. **Load.** Each participant answer becomes one row with its participant ID, line number, interviewer question and
@@ -90,7 +108,28 @@ The full reasoning, with alternatives and costs, is in `decisions.md` (18 record
 `model_comparison.md`.
 
 ## 8. Extending it to a secure, scalable application
-![Production architecture](architecture_production.png)
+
+The same design as editable Mermaid source:
+
+```mermaid
+flowchart TB
+    U["Researchers and commissioners"] --> FE["React web and mobile app"]
+    FE -->|"HTTPS, JSON, token auth"| API["Django REST API with role-based access"]
+    API --> DB[("PostgreSQL with pgvector")]
+    API --> OBJ[("Encrypted object storage: audio, transcripts")]
+    API --> Q["Task queue: Celery with Redis"]
+    Q --> W1["Worker: speech-to-text (Whisper)"]
+    Q --> W2["Worker: anonymisation (NER and rules)"]
+    Q --> W3["Worker: embeddings, clustering, classifier"]
+    Q --> W4["Optional worker: open-source LLM drafts insights"]
+    W4 --> VER["Verifier: quotes verbatim, claims cited"]
+    VER --> DB
+    W1 --> DB
+    W2 --> DB
+    W3 --> DB
+    API --> AUD[("Immutable audit log")]
+    API --> MON["Monitoring and alerts"]
+```
 
 - **Application:** React web and mobile front end, Django REST API with role-based access and token authentication,
   talking over HTTPS with JSON.
@@ -140,6 +179,6 @@ src/              pipeline and analysis modules
 ui/               one module per dashboard page
 data/             synthetic transcripts, metadata, planted ground truth
 results/          saved outputs read by the dashboard
-docs/             this document, architecture, decisions, model comparison, diagrams
+docs/             this document (including the architecture diagrams), decisions, model comparison, diagram images
 tests/            automated tests
 ```
