@@ -1,193 +1,59 @@
-# Design decisions: what I chose, what else I could have done, and why not
+# Technologies and design decisions
 
-## Why I kept this document
-1. **Defensibility.** If a supervisor, an ethics panel or a commissioner asks "why did you do it this way?", a recorded
-   reason is stronger than my memory.
-2. **Reproducibility.** Someone else can rerun the analysis and see which choices drove the results.
-3. **Honesty about trade-offs.** Every method has weaknesses. Writing them down stops me hiding them.
-4. **Handover.** The people who build a system are often not the people who maintain it.
-5. **Governance.** Work with vulnerable participants needs an audit trail of how their words were processed.
+Short notes on what I chose for the prototype and why. Measured comparisons are in `model_comparison.md`, and the production design is in section 8 of `technical_documentation.md`.
 
-Each record gives the decision, the options I considered, what I chose, why, the cost of the choice, and what would
-make me change it.
+## 1. Synthetic data from templates
 
----
+The brief asks for synthetic or public non-sensitive data, and I could not find a public set of care-experienced interviews with questions and metadata. I wrote a generator that builds 100 interviews from templates, with a fixed seed. Because I control the topics, I know what the pipeline should find, so I can score it. LLM-written interviews would read more naturally, but I could not control or check what patterns they contain. The cost is that template answers are repetitive, so results look cleaner than real interviews would.
 
-## D1. Synthetic data, generated from templates
-- **Options:** (a) real interviews, (b) public datasets, (c) LLM-generated interviews, (d) template-generated interviews.
-- **Chosen:** (d). The brief requires synthetic or public non-sensitive data.
-- **Why:** it is safe, it lets me plant known patterns (which topics co-occur, a regional effect) so I can TEST
-  whether the pipeline finds them, and it is fully reproducible (fixed random seed).
-- **Why not the others:** real data is out of scope and unsafe. Public datasets rarely have care-experienced
-  interviews with questions and metadata. LLM-generated interviews would be more natural, but I could not control or
-  verify what patterns they contain.
-- **Cost:** templates are repetitive, so results look cleaner than real interviews. Scores from evaluate.py show
-  how methods compare, not how accurate the system would be on real data.
-- **Revisit when:** real, consented data is available.
+## 2. One answer as the unit
 
-## D2. Keep the interviewer's question with every answer
-- **Options:** (a) answers only, (b) answers plus question as metadata, (c) embed question and answer together.
-- **Chosen:** (b). Themes are found from the answer text. The question is stored and shown.
-- **Why:** a short answer such as "Yes, mostly" means nothing without its question. Keeping the question lets the
-  dashboard show which questions produced which themes. Embedding question plus answer (c) would make answers to the
-  same question cluster together because of the question wording, not what people said.
-- **Follow-up probes** ("Can you say more?") carry no topic, so those answers keep the previous main question.
-- **Cost:** answers that raise a topic unprompted, under a different question, stay in their own theme but are
-  displayed with the question they were given.
-- **Revisit when:** a study asks very open questions where the question adds little.
+An interview covers many topics, so one label per interview says little, and single sentences are often too short to carry meaning. I treat each participant answer (one transcript line) as the unit. It is easy to quote and it has a line number, which the quote check needs. The interviewer's question is stored next to each answer but is not mixed into the text, because embedding it would make answers group by the wording of the question. Follow-up probes such as "Can you say more?" keep the previous main question. A long answer that covers two topics gets only one theme, which would matter with real data.
 
-## D3. One answer (one transcript line) as the unit of analysis
-- **Options:** (a) whole interview, (b) sentence, (c) answer.
-- **Chosen:** (c).
-- **Why:** an interview covers many topics, so one label per interview is meaningless. Sentences are often too short
-  to carry meaning on their own. An answer is a natural, quotable unit and maps to a line number for verification.
-- **Cost:** a long answer covering two topics gets one theme. My synthetic answers are mostly single-topic.
-- **Revisit when:** real answers are long and multi-topic: split into sentences or paragraphs.
+## 3. Sentence embeddings
 
-## D4. Sentence embeddings (all-MiniLM-L6-v2) to represent meaning
-- **Options:** (a) keyword counts/TF-IDF, (b) topic model such as LDA, (c) small embedding model,
-  (d) larger embedding model (all-mpnet-base-v2), (e) a hosted embedding API.
-- **Chosen:** (c), with (a) and (d) available for comparison (NV_EMBEDDER=tfidf or mpnet).
-- **Why:** embeddings match meaning ("moved homes" and "changed placements"), which keyword methods miss.
-  MiniLM is small, fast on a laptop and runs locally, so no participant text leaves the machine.
-- **Why not (a)/(b):** short answers share few exact words, so counts are sparse. In my comparison, k-means on the TF-IDF
-  baseline recovered the planted topics poorly (adjusted Rand index about 0.2) and gave unstable themes. TF-IDF with
-  HDBSCAN scored higher (0.85), but it left about 60% of answers without a theme. Run
-  `python src/evaluate.py minilm mpnet tfidf` to see all three on your machine.
-- **Why not (e):** sends participant text to a third party, which is hard to justify for vulnerable participants.
-- **Cost:** small models are weaker than large ones, and they capture topic better than tone.
-- **Revisit when:** evaluate.py shows mpnet is clearly better and the extra time is acceptable.
+I use all-MiniLM-L6-v2. It matches meaning ("moved homes" and "changed placements") where keyword counts do not, it is small enough for a laptop, and it runs locally. A hosted embedding API would send participant text to a third party, which I did not want for vulnerable participants. I also ran MPNet, a larger model, and TF-IDF as a baseline. With k-means, MPNet scored lower than MiniLM on this data, so the larger model did not earn its extra time.
 
-## D5. K-means clustering, with k chosen by silhouette score
-- **Options:** (a) k-means, (b) hierarchical (agglomerative) clustering, (c) HDBSCAN (density-based),
-  (d) BERTopic, (e) an LLM that reads everything and names themes, (f) manual coding only.
-- **Chosen:** (a).
-- **Why:** simple to explain, fast, every answer gets a theme, the cluster centre gives an objective "most
-  typical answer", and the user can change k live in the dashboard.
-- **Why not (c)/(d):** HDBSCAN leaves many points unassigned as noise and needs tuning, and BERTopic stacks several
-  tools that are harder to explain in a panel. Both are good next steps.
-- **Why not (e):** an LLM reading everything cannot be checked and may invent themes. I use an LLM only after
-  themes exist, on verified quotes.
-- **Why not (f):** the point is to help researchers cope with volume.
-- **Cost:** k-means assumes round, similar-sized groups and forces every answer into a theme. Silhouette can favour
-  too many clusters, so the dashboard reports it, shows stability, and lets the researcher override k.
-- **Quality checks built in:** stability across random starts (shown in the sidebar) and comparison with planted
-  topics (evaluate.py).
+## 4. K-means with k chosen by silhouette
 
-## D6. Theme labels from distinctive words (TF-IDF), not generated text
-- **Options:** (a) top words, (b) LLM-generated names, (c) researcher names only.
-- **Chosen:** (a) as a starting label, (c) as the final label in the Review tab.
-- **Why:** the labels are computed from the data, so they cannot invent anything. An LLM name would read better but
-  could introduce framing the data does not support.
-- **Cost:** labels are rough keyword lists. The researcher is expected to rename them.
+K-means gives every answer a theme, the cluster centre gives an objective "most typical" answer, and it is easy to explain and adjust, so the dashboard lets the researcher change k live. I compared agglomerative clustering and HDBSCAN. HDBSCAN scored higher on topic recovery (0.65 against 0.37 for k-means with MiniLM) but left 55% of answers without any theme, so I did not use it. Silhouette picked 15 themes for the 8 planted topics, and stability across random starts is only 0.42. The dashboard shows both numbers and the researcher can override k. I did not ask an LLM to read everything and name the themes, because that cannot be checked.
 
-## D7. Evidence: representative quotes, one per participant, each verified
-- **Options:** (a) random quotes, (b) the answers nearest the cluster centre, (c) LLM-selected quotes.
-- **Chosen:** (b), at most one per participant, and every displayed quote is re-checked against the source file.
-- **Why:** nearest-the-centre is objective and repeatable. One per participant stops one talkative person looking like
-  a pattern. Verification (the quote must appear word for word at that participant and line) is a deterministic
-  defence against fabricated or altered evidence.
-- **Cost:** "most typical" can hide unusual but important voices. The dashboard lets the researcher change the order
-  and show more quotes.
+## 5. Theme labels from distinctive words
 
-## D8. Tone shown separately from theme
-- **Options:** (a) ignore tone, (b) a small sentiment model, (c) ask an LLM, (d) manual only.
-- **Chosen:** (b) with a crude word-list fallback, clearly flagged.
-- **Why:** embeddings group by topic, so "I stayed in one placement for years" and "I was moved seven times" can land in
-  the same theme. Without tone a researcher could read that as a single negative finding.
-- **Cost:** the sentiment model was trained on film reviews, not care narratives, and tone is not the same as
-  stance. It is unreliable on "mixed" answers. evaluate.py reports its agreement with the planted stance, and
-  researchers should treat tone as a prompt for reading, not a result.
+Labels are the words most distinctive to each theme, computed from the data, so they cannot add framing the answers do not support. They are rough, and the researcher renames them on the Review page. An LLM could write nicer names, but I did not want it to introduce interpretation at this step.
 
-## D9. Theme relationships: lift and Fisher's exact test
-- **Options:** (a) raw shared-participant counts, (b) Jaccard overlap, (c) lift with a significance test,
-  (d) an LLM or knowledge graph that extracts "X causes Y" relations.
-- **Chosen:** (c), with counts and Jaccard also available.
-- **Why:** raw counts make big themes look related to everything. Lift asks whether two themes co-occur more than
-  their sizes alone would predict, and the test (with Bonferroni correction for the many pairs) says how
-  surprising that is with 100 people.
-- **Why not (d):** extracting causes from text is a much harder and less verifiable problem.
-- **Cost:** co-occurrence is not causation, and with 100 participants many tests are noisy. The dashboard says so
-  next to the chart.
+## 6. Quotes: typical, one per participant, verified
 
-## D10. Optional local LLM for insight drafting, behind hard checks
-- **Options:** (a) no LLM, (b) hosted LLM API, (c) local open-source LLM via Ollama.
-- **Chosen:** (c), optional. Quotes only, every claim cites evidence numbers, and claims with unknown evidence,
-  participant IDs, or numbers not found in the cited evidence are rejected.
-- **Why:** it meets the "AI-generated insight" requirement while keeping data on the machine and keeping the
-  strongest defence against unsupported claims. (a) is safest but has no generated insight. (b) sends data out.
-- **Cost:** a 3B model is weak. The checks catch some failures (numbers, IDs, bad references), not all: a claim
-  can still overreach while citing real quotes, so a researcher must read every draft.
+For each theme I show the answers nearest the cluster centre, at most one per participant, so a single talkative person does not look like a pattern. Every quote is checked against the original file and must appear word for word at that participant and line. On the demo data 992 of 992 answers pass. Typical answers can hide unusual voices, so the Quality checks page lists the ones that do not fit.
 
-## D11. Human validation with an audit log
-- **Chosen:** accept, reject, rename and annotate each theme. Every change is logged with who, when, old value, new value.
-  The final report contains accepted themes only.
-- **Why:** AI output is a proposal. Interpretation of people's lived experience belongs to researchers (and ideally
-  co-researchers). The log makes the process auditable.
-- **Revisit when:** several reviewers are involved: add accounts, roles and inter-coder agreement measures.
+## 7. Tone shown separately
 
-## D12. Streamlit dashboard
-- **Options:** (a) Streamlit, (b) Dash, (c) Jupyter notebook, (d) React frontend plus Django REST API.
-- **Chosen:** (a).
-- **Why:** quick to build and change in Python, which is what this exercise is judging. Live filters, selectable map, and
-  search are possible without writing front-end code.
-- **Why not (d) now:** it is the right production path (see architecture.md) but too much for a small prototype.
-- **Cost:** limited layout control, no real user accounts, one process.
+Embeddings group by topic, so "I stayed in one placement for years" and "I was moved seven times" can land in the same theme. A small sentiment model (DistilBERT) labels each answer positive, negative or uncertain so the split is visible. It was trained on film reviews, so it agrees with the planted stance 79.9% of the time (the word-list fallback gets 64.0%), and it is weak on mixed answers. I treat tone as a prompt to read, not a result.
 
-## D13. Files and CSV instead of a database
-- **Chosen:** transcripts as text files, results as CSV/NPY/JSON.
-- **Why:** transparent, easy to inspect, nothing to install.
-- **Revisit when:** many users or many interviews: PostgreSQL (with pgvector for similarity search).
+## 8. Links between themes: lift and Fisher's test
 
-## D14. Everything runs locally
-- **Why:** participant narratives are sensitive. A local pipeline needs no data-sharing agreement with an API vendor.
-- **Cost:** smaller models, slower on a laptop.
-- **For production:** controlled infrastructure with encryption, role-based access, and a data management plan under UK GDPR.
+Raw shared-participant counts make big themes look related to everything. Lift asks whether two themes appear in the same people more often than their sizes predict, and Fisher's exact test with a Bonferroni correction says how surprising that is across the many pairs. Co-occurrence is not causation, and with 100 people many pairs are noisy, which the page says. I did not try to extract cause and effect from the text because it cannot be verified.
 
----
+## 9. Optional local LLM for insights
 
-## D15. Upload with a format check, then the same pipeline
-- **Options:** (a) only a fixed folder, (b) upload and analyse, (c) free-form documents parsed by an LLM.
-- **Chosen:** (b) with a strict, simple format (`INTERVIEWER:` / `PARTICIPANT:` lines, one file per participant).
-- **Why:** the brief asks for the ability to "upload or process" transcripts. A strict format makes problems visible
-  (the page lists lines it cannot read) and keeps speaker and line number reliable, which verification depends on.
-- **Why not (c):** guessing structure from free text would put unverifiable errors at the very start of the pipeline.
-- **Cost:** real transcripts need converting to this format first. A production version would add importers for
-  common transcript formats and speech-to-text.
+The brief asks for AI-generated insights, so I added one, but it is optional. It runs through Ollama (llama3.2:3b) on the same machine, sees only verified quotes for one theme, and must cite evidence numbers for every claim. A draft is rejected if it cites evidence that does not exist, names a participant ID, or contains a number that is not in the cited quotes. A hosted API would be stronger but sends data out. The checks cannot catch a claim that overreaches while citing real quotes, so a researcher reads every draft.
 
-## D16. Quality checks that question the AI
-- **Chosen:** (1) live evidence check, (2) voices that do not fit (answers far from their theme centre),
-  (3) contrast cases (tone opposite to the theme majority), (4) a privacy scan for identifiers.
-- **Why:** summaries smooth over unusual voices, and looking for negative or deviant cases is standard good practice
-  in qualitative work. The privacy scan supports the data-protection duty, because identifiers must be found before analysis.
-- **Cost:** the privacy scan is pattern matching, so it misses nicknames, school names and unusual spellings. It
-  supports a human check and does not replace it. Contrast cases depend on tone, which is approximate.
+## 10. Human review with an audit log
 
-## D17. Dashboard structure and design
-- **Options:** (a) one long page, (b) tabs for everything, (c) sidebar navigation with one page per task.
-- **Chosen:** (c), ordered as a researcher works: see patterns, read evidence, question the AI, decide. Each page is a
-  module (`ui/page_*.py`), and `app.py` only wires them together.
-- **Design choices:** colour-blind-safe palettes (so tone never relies on red versus green), plain-language labels,
-  explanations beside each chart, and help text for statistical terms. Filters apply across pages, with a notice when active.
-- **Cost:** Streamlit limits layout control and has no real user accounts. A production system would use the
-  React and Django design in `architecture.md`.
+The AI proposes and the researcher decides. Each theme can be accepted, renamed, marked as needing edits or rejected, with notes. Every change is logged with who, when and the old and new value, and the report contains accepted themes only. With several reviewers this would need accounts, roles and an agreement measure between coders.
 
-## D18. How the comparison was done
-- **What is compared:** three embedding models (MiniLM, MPNet, TF-IDF), four clustering approaches (k-means with
-  automatic k, k-means with planted k, agglomerative, HDBSCAN), and two tone methods.
-- **Measures:** agreement with the planted topics (adjusted Rand index and normalised mutual information), share of
-  answers given a theme, stability across random starts, and run time. Tone is measured as agreement with the
-  planted positive or negative stance.
-- **Why these measures:** because the synthetic data has known topics, I can measure whether a method recovers them.
-  Share assigned matters because a method can score well by leaving most answers unassigned.
-- **Caveat:** the data is template-built and therefore easier than real interviews. The numbers rank methods and
-  do not estimate real accuracy. Reproduce them with `python src/evaluate.py`. Results are in
-  `docs/model_comparison.md` and on the Methods page of the dashboard.
+## 11. Quality checks and a privacy scan
 
-## Known limitations
-- Synthetic, template-based data: results are cleaner than real interviews.
-- Tone is approximate, and the fallback word list is crude.
-- Subgroup comparisons (region, age and so on) are exploratory. Small groups produce noise.
-- No fairness audit of a trained classifier yet: the pipeline is unsupervised, so there is nothing trained to audit. A
-  fairness audit (for example with AI Fairness 360) belongs with a supervised classifier built on a hand-coded gold set.
-- The LLM layer drafts text but cannot guarantee that a claim is fully supported.
+Summaries smooth over untidy voices, so the dashboard lists answers that sit far from their theme and answers whose tone is the opposite of the theme majority. It also has a live test of the quote checker. A pattern-based scan flags emails, phone numbers, postcodes and names for a person to check. It misses nicknames and school names, so it supports a human check and does not replace it.
+
+## 12. Upload with a strict format
+
+Transcripts are `INTERVIEWER:` and `PARTICIPANT:` lines, one file per participant, and the Upload page lists any line it cannot read. A strict format keeps the speaker and line number reliable, which verification depends on. Guessing the structure of free text with an LLM would put errors at the start of the pipeline that nobody could check. Real transcripts would need converting first, and a production version would add importers and speech to text.
+
+## 13. Streamlit, plain files, everything local
+
+Streamlit was the quickest way to build live filters, a selectable map and a review step in Python. Results are stored as CSV, NPY and JSON files that are easy to inspect, with nothing to install. Everything runs on the machine because the narratives are sensitive, and a local pipeline needs no data sharing agreement with an API vendor. The cost is smaller models, one process and no user accounts. The production path (React, Django, PostgreSQL with pgvector, queued workers) is in section 8 of `technical_documentation.md`.
+
+## How I compared the options
+
+Because the demo data has planted topics, I could score each method on whether it recovers them. I compared three embedders (MiniLM, MPNet, TF-IDF), four clustering approaches (k-means with automatic k, k-means with k=8, agglomerative, HDBSCAN) and two tone methods. The measures were adjusted Rand index, normalised mutual information, the share of answers given a theme, stability across random starts, and run time. I report the share assigned because a method can score well by leaving most answers unassigned. The data is template-built and easier than real interviews, so the scores rank methods and do not estimate real accuracy. Run `python src/evaluate.py` to reproduce them. The results are in `model_comparison.md` and on the Methods page of the dashboard.
