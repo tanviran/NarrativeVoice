@@ -24,7 +24,7 @@ would extend it.
 
 Data flows in five stages: **input**, **processing** (run once, results saved to `results/`), **analysis** (live in
 the dashboard), **safeguards**, and **human validation**. The dashboard is a Streamlit app (`app.py`) with one module
-per page in `ui/`. The same diagram is given below as editable Mermaid source, showing which module does each job.
+per page in `ui/`. The diagram is given below, showing which module does each job.
 
 ```mermaid
 flowchart LR
