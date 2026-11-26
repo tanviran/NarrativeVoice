@@ -107,9 +107,6 @@ The full reasoning, with alternatives and costs, is in `decisions.md`. Measured 
 `model_comparison.md`.
 
 ## 8. Extending it to a secure, scalable application
-
-The same design as editable Mermaid source:
-
 ```mermaid
 flowchart TB
     U["Researchers and commissioners"] --> FE["React web and mobile app"]
