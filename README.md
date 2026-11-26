@@ -98,4 +98,4 @@ See `docs/decisions.md`: each decision with the alternatives, the reason, the co
 
 ## Limitations
 Synthetic template-based data, approximate tone, exploratory subgroup comparisons, a pattern-based privacy scan,
-and no fairness audit of a trained classifier yet (this pipeline is unsupervised). Full list in `docs/decisions.md`.
+and no fairness audit of a trained classifier yet. Full list in `docs/decisions.md`.
