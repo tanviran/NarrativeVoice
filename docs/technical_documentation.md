@@ -3,7 +3,7 @@
 ## 1. Purpose and scope
 The prototype shows how AI and NLP can turn interview transcripts from care-experienced young adults into
 structured findings where **every finding links back to a participant and a line in the original transcript**.
-A researcher then reviews, edits and approves the results. It runs on one laptop, uses **100 synthetic interviews**
+A researcher then reviews, edits and approves the results. It uses **100 synthetic interviews**
 (992 participant answers, no real data), and can also analyse non-sensitive transcripts uploaded by the user.
 
 The prototype is deliberately small. It is a proof of concept, not a production system. Section 8 describes how I
