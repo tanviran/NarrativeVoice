@@ -13,7 +13,7 @@ would extend it.
 
 | Requirement | What I built | Module |
 |---|---|---|
-| 1. Text processing | Reads `INTERVIEWER:` / `PARTICIPANT:` transcripts, checks the format, pairs each answer with its question | `loader.py`, Upload page |
+| 1. Text processing | Reads `INTERVIEWER:` / `PARTICIPANT:` transcripts, checks the format, pairs each answer with its question | `loader.py`, Upload transcript (Streamlit app) |
 | 2. Theme identification | Sentence embeddings, then k-means (k chosen by silhouette score, adjustable), stability check, keyword labels | `embed.py`, `themes.py` |
 | 3. Semantic analysis | Which themes appear in the same people (lift and Fisher's exact test), a 2D map, semantic search | `relations.py`, Map and search page |
 | 4. Evidence extraction | Representative quotes for each theme, one per participant, each checked verbatim against the source line | `evidence.py` |
