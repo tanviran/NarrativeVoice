@@ -4,7 +4,7 @@ Short notes on what I chose for the prototype and why. Measured comparisons are 
 
 ## 1. Synthetic data from templates
 
-The brief asks for synthetic or public non-sensitive data, and I could not find a public set of care-experienced interviews with questions and metadata. I wrote a generator that builds 100 interviews from templates, with a fixed seed. Because I control the topics, I know what the pipeline should find, so I can score it. LLM-written interviews would read more naturally, but I could not control or check what patterns they contain. The cost is that template answers are repetitive, so results look cleaner than real interviews would.
+The brief asks for synthetic or public non-sensitive data, and I preferred to use synthetic data for this prototype. I wrote a generator that builds 100 interviews from templates, with a fixed seed. Because I control the topics, I know what the pipeline should find, so I can score it. LLM-written interviews would read more naturally, but I could not control or check what patterns they contain. The cost is that template answers are repetitive, so results look cleaner than real interviews would.
 
 ## 2. One answer as the unit
 
