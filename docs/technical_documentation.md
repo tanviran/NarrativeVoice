@@ -103,7 +103,7 @@ built, and any that fail are marked NOT VERIFIED.
 | Streamlit | Fastest way to show the analysis and the review step in a demo |
 | Synthetic data with planted patterns | Safe, and lets me test whether the pipeline recovers known truth |
 
-The full reasoning, with alternatives and costs, is in `decisions.md` (18 records). Measured comparisons are in
+The full reasoning, with alternatives and costs, is in `decisions.md`. Measured comparisons are in
 `model_comparison.md`.
 
 ## 8. Extending it to a secure, scalable application
