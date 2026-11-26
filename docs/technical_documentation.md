@@ -15,10 +15,10 @@ would extend it.
 |---|---|---|
 | 1. Text processing | Reads `INTERVIEWER:` / `PARTICIPANT:` transcripts, checks the format, pairs each answer with its question | `loader.py`, Upload transcript (Streamlit app) |
 | 2. Theme identification | Sentence embeddings, then k-means (k chosen by silhouette score, adjustable), stability check, keyword labels | `embed.py`, `themes.py` |
-| 3. Semantic analysis | Which themes appear in the same people (lift and Fisher's exact test), a 2D map, semantic search | `relations.py`, Map and search page |
+| 3. Semantic analysis | Which themes appear in the same people (lift and Fisher's exact test), a 2D map, semantic search | `relations.py`, Map and search page (Streamlit app) |
 | 4. Evidence extraction | Representative quotes for each theme, one per participant, each checked verbatim against the source line | `evidence.py` |
 | 5. AI-generated insights | A local LLM drafts short insights from verified quotes only; every claim must cite evidence and pass hard checks | `insights.py` |
-| 6. Human validation | Researcher accepts, renames, edits or rejects each theme; notes, audit log, report export | Review page |
+| 6. Human validation | Researcher accepts, renames, edits or rejects each theme; notes, audit log, report export | Review page (Streamlit app) |
 
 ## 3. Architecture
 
