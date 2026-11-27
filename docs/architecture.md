@@ -1,6 +1,6 @@
 # Architecture
 
-## A. This prototype (runs on one laptop)
+## A. This prototype
 
 ```mermaid
 flowchart LR
