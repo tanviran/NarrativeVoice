@@ -3,10 +3,7 @@
     python src/evaluate.py                       minilm, mpnet, tfidf
     python src/evaluate.py minilm tfidf          choose which embedders to compare
 
-Writes results/evaluation.json (read by the dashboard's Methods page) and docs/model_comparison.md.
-
-CAUTION: the data is synthetic and template-built, so absolute scores look better than real interviews
-would. Use the results to compare methods with each other, not to claim real-world accuracy."""
+Writes results/evaluation.json (read by the dashboard's Methods page) and docs/model_comparison.md."""
 import datetime
 import json
 import sys
